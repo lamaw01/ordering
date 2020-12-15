@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ordering/cart.dart';
-import 'file:///C:/Users/janre/Documents/Flutter%20Projects/ordering/color/colors.dart';
+import 'colors.dart';
 import 'package:ordering/models/menuModel.dart';
 import 'package:ordering/services/menuService.dart';
 import 'package:ordering/models/cartModel.dart';
@@ -37,7 +37,7 @@ class _MenuState extends State<Menu> {
           "Item added",
           context,
           gravity: Toast.CENTER,
-          duration: 2,
+          duration: 1,
         );
         Navigator.pop(context);
       });
@@ -103,6 +103,7 @@ class _MenuState extends State<Menu> {
         title: Text(
           'Menu List',
           style: TextStyle(
+            color: titleColor,
             fontFamily: 'Poppins',
           ),
         ),

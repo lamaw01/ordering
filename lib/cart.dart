@@ -1,13 +1,14 @@
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'file:///C:/Users/janre/Documents/Flutter%20Projects/ordering/color/colors.dart';
+import 'package:ordering/checkout.dart';
+import 'package:ordering/colors.dart';
 import 'package:ordering/models/cartModel.dart';
+import 'package:ordering/models/checkoutModel.dart';
 import 'package:ordering/models/totalModel.dart';
 import 'package:ordering/services/cartService.dart';
+import 'package:ordering/services/checkoutService.dart';
 import 'package:ordering/services/totalValService.dart';
-import 'package:ordering/total.dart';
 import 'package:toast/toast.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class Cart extends StatefulWidget {
   @override
@@ -17,6 +18,7 @@ class Cart extends StatefulWidget {
 class _CartState extends State<Cart> {
   List<CartModel> cartList;
   List<TotalValModel> totalValList;
+  List<CheckoutModel> checkoutList;
   bool loading = true;
 
   getAllCart() async {
@@ -32,7 +34,6 @@ class _CartState extends State<Cart> {
     setState(() {
       loading = false;
     });
-    print("total : ${totalValList.length}");
   }
 
   deleteToCart(CartModel cartModel) async {
@@ -47,7 +48,7 @@ class _CartState extends State<Cart> {
         "Item Removed",
         context,
         gravity: Toast.CENTER,
-        duration: 2,
+        duration: 1,
       );
       Navigator.pop(context);
     } catch (e) {
@@ -74,7 +75,7 @@ class _CartState extends State<Cart> {
             TextButton(
               child: Text('Yes.'),
               onPressed: () {
-                print(cartIdParam);
+                // print(cartIdParam);
                 deleteToCart(cartIdParam);
               },
             ),
@@ -90,15 +91,70 @@ class _CartState extends State<Cart> {
     );
   }
 
-  Future totalSum() async {
+  addToCheckout(CheckoutModel checkoutModel) async {
     try {
-      var url = "http://192.168.0.12/ordering/total.php";
-      var response = await http.post(url);
-      var data = json.decode(response.body);
-      print(data);
+      await CheckoutService().addCheckout(checkoutModel).then((success) async {
+        Toast.show(
+          "Ordered",
+          context,
+          gravity: Toast.CENTER,
+          duration: 1,
+        );
+        try {
+          await http.delete('http://192.168.0.12/ordering/delete_all_cart.php');
+        } catch (e) {
+          print(e);
+        }
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Checkout(),
+          ),
+        );
+      });
     } catch (e) {
       print(e.toString());
     }
+  }
+
+  showCheckout(totalParam) async {
+    CheckoutModel checkoutModel = CheckoutModel(
+      summary: totalParam,
+    );
+    return showDialog(
+      context: context,
+      useRootNavigator: false,
+      barrierDismissible: true, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Checkout'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(
+                  'Are you sure?',
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+                child: Text('Yes.'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  addToCheckout(checkoutModel);
+                }),
+            TextButton(
+              child: Text('Cancel.'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -118,8 +174,18 @@ class _CartState extends State<Cart> {
           'Your Basket',
           style: TextStyle(
             fontFamily: 'Poppins',
+            color: titleColor,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: () {
+              getAllCart();
+              getTotalVal();
+            },
+          ),
+        ],
       ),
       body: loading
           ? Center(
@@ -217,7 +283,7 @@ class _CartState extends State<Cart> {
                         itemCount: totalValList.length,
                         itemBuilder: (context, index) {
                           TotalValModel cart = totalValList[index];
-                          if (totalValList.isNotEmpty) {
+                          if (cart.total != null) {
                             return Card(
                               child: Padding(
                                 padding: const EdgeInsets.all(8),
@@ -250,7 +316,7 @@ class _CartState extends State<Cart> {
                               ),
                             );
                           } else {
-                            return CircularProgressIndicator();
+                            return Container();
                           }
                         }),
                   ),
@@ -360,29 +426,50 @@ class _CartState extends State<Cart> {
                       ),
                     ),
                   ),
-                  RaisedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Total(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      'PLACE ORDER',
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                    color: Colors.red,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
-                      side: BorderSide(
-                        color: Colors.red,
-                      ),
-                    ),
-                  )
+                  Expanded(
+                    child: ListView.builder(
+                        itemCount: totalValList.length,
+                        itemBuilder: (context, index) {
+                          TotalValModel sumKey = totalValList[index];
+                          if (sumKey.total == null) {
+                            return RaisedButton(
+                              onPressed: () {},
+                              child: Text(
+                                'EMPTY ORDER',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              color: Colors.red,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                                side: BorderSide(
+                                  color: Colors.red,
+                                ),
+                              ),
+                            );
+                          } else {
+                            return RaisedButton(
+                              onPressed: () {
+                                showCheckout(sumKey.total);
+                              },
+                              child: Text(
+                                'PLACE ORDER',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              color: Colors.red,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                                side: BorderSide(
+                                  color: Colors.red,
+                                ),
+                              ),
+                            );
+                          }
+                        }),
+                  ),
                 ],
               ),
             ),

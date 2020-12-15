@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'file:///C:/Users/janre/Documents/Flutter%20Projects/ordering/color/colors.dart';
+import 'colors.dart';
 import 'package:ordering/menu.dart';
 import 'package:toast/toast.dart';
 
@@ -48,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
           'Login Successful',
           context,
           gravity: Toast.BOTTOM,
-          duration: 2,
+          duration: 1,
         );
         Navigator.push(
           context,
@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
           'Username and password invalid',
           context,
           gravity: Toast.BOTTOM,
-          duration: 2,
+          duration: 1,
         );
       }
     } catch (e) {
@@ -147,7 +147,16 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ),
                         onPressed: () {
-                          login();
+                          if (user.text.isEmpty || pass.text.isEmpty) {
+                            Toast.show(
+                              "This field is required",
+                              context,
+                              gravity: Toast.BOTTOM,
+                              duration: 1,
+                            );
+                          } else {
+                            login();
+                          }
                         },
                       ),
                     ),

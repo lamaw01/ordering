@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 15, 2020 at 06:56 PM
+-- Generation Time: Dec 15, 2020 at 11:33 PM
 -- Server version: 10.4.14-MariaDB
 -- PHP Version: 7.2.34
 
@@ -31,22 +31,65 @@ CREATE TABLE `cart` (
   `cartid` int(11) NOT NULL,
   `menuid` varchar(250) NOT NULL,
   `menuname` varchar(250) NOT NULL,
-  `menuprice` varchar(250) NOT NULL
+  `menuprice` varchar(250) NOT NULL,
+  `cartdatecreated` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `cart`
 --
 
-INSERT INTO `cart` (`cartid`, `menuid`, `menuname`, `menuprice`) VALUES
-(57, '2', 'Belly Buster', '680.00'),
-(60, '5', 'Creole Pasta', '295.00'),
-(62, '7', 'Emperor Caesar`s - with Grilled chicken', '265.00'),
-(63, '6', 'Dippy Doodle Doo', '205.00'),
-(64, '3', 'Buenos Nachos', '245.00'),
-(65, '10', 'Sriracha garlic chicken wings', '210.00'),
-(66, '7', 'Emperor Caesar`s - with Grilled chicken', '265.00'),
-(67, '4', 'Chili flappers', '199.00');
+INSERT INTO `cart` (`cartid`, `menuid`, `menuname`, `menuprice`, `cartdatecreated`) VALUES
+(3, '8', 'Fisherman`s Platter', '795.00', '2020-12-15 22:32:38'),
+(4, '10', 'Sriracha garlic chicken wings', '210.00', '2020-12-15 22:32:40');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `checkout`
+--
+
+CREATE TABLE `checkout` (
+  `orderid` int(11) NOT NULL,
+  `summary` varchar(250) NOT NULL,
+  `orderdatecreated` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `checkout`
+--
+
+INSERT INTO `checkout` (`orderid`, `summary`, `orderdatecreated`) VALUES
+(1, '700', '2020-12-15 18:39:50'),
+(31, '3284', '2020-12-15 20:47:22'),
+(32, '3284', '2020-12-15 20:47:27'),
+(33, '3284', '2020-12-15 20:59:29'),
+(34, '3284', '2020-12-15 21:01:21'),
+(35, '680', '2020-12-15 21:21:59'),
+(36, '680', '2020-12-15 21:25:02'),
+(37, '680', '2020-12-15 21:30:13'),
+(38, '680', '2020-12-15 21:30:26'),
+(39, '1479', '2020-12-15 21:33:37'),
+(40, '1479', '2020-12-15 21:33:48'),
+(41, '1479', '2020-12-15 21:33:53'),
+(42, '1479', '2020-12-15 21:34:09'),
+(43, '1479', '2020-12-15 21:34:25'),
+(44, '885', '2020-12-15 21:39:54'),
+(45, '1094', '2020-12-15 21:59:10'),
+(46, '299', '2020-12-15 21:59:42'),
+(47, '2593', '2020-12-15 22:00:46'),
+(48, '560', '2020-12-15 22:02:14'),
+(49, '1094', '2020-12-15 22:04:01'),
+(50, '1094', '2020-12-15 22:05:09'),
+(51, '1274', '2020-12-15 22:12:57'),
+(52, '1879', '2020-12-15 22:15:38'),
+(53, '1879', '2020-12-15 22:15:50'),
+(54, '1060', '2020-12-15 22:17:49'),
+(55, '564', '2020-12-15 22:18:21'),
+(56, '795', '2020-12-15 22:20:58'),
+(57, '4138', '2020-12-15 22:23:58'),
+(58, '680', '2020-12-15 22:30:46'),
+(59, '3707', '2020-12-15 22:32:00');
 
 -- --------------------------------------------------------
 
@@ -108,6 +151,12 @@ ALTER TABLE `cart`
   ADD PRIMARY KEY (`cartid`);
 
 --
+-- Indexes for table `checkout`
+--
+ALTER TABLE `checkout`
+  ADD PRIMARY KEY (`orderid`);
+
+--
 -- Indexes for table `menu`
 --
 ALTER TABLE `menu`
@@ -127,7 +176,13 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `cartid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
+  MODIFY `cartid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `checkout`
+--
+ALTER TABLE `checkout`
+  MODIFY `orderid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- AUTO_INCREMENT for table `menu`
