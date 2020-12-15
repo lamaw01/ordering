@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ordering/cart.dart';
+import 'file:///C:/Users/janre/Documents/Flutter%20Projects/ordering/color/colors.dart';
 import 'package:ordering/models/menuModel.dart';
 import 'package:ordering/services/menuService.dart';
 import 'package:ordering/models/cartModel.dart';
@@ -98,50 +99,66 @@ class _MenuState extends State<Menu> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Menu List'),
+        backgroundColor: containerColor,
+        title: Text(
+          'Menu List',
+          style: TextStyle(
+            fontFamily: 'Poppins',
+          ),
+        ),
       ),
       body: loading
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : ListView.builder(
-              itemCount: menuList.length,
-              itemBuilder: (context, index) {
-                MenuModel menu = menuList[index];
-                return Card(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
-                    child: ListTile(
-                      leading: Container(
-                        width: 80,
-                        height: 80,
-                        child: Image.network(imageUrl + menu.menuimg),
-                      ),
-                      title: Text(
-                        menu.menuname,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
+          : Container(
+              color: containerColor,
+              child: ListView.builder(
+                  itemCount: menuList.length,
+                  itemBuilder: (context, index) {
+                    MenuModel menu = menuList[index];
+                    return Card(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+                        child: ListTile(
+                          leading: Container(
+                            width: 80,
+                            height: 80,
+                            child: Image.network(imageUrl + menu.menuimg),
+                          ),
+                          title: Text(
+                            menu.menuname,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'Poppins',
+                            ),
+                          ),
+                          subtitle: Text(
+                            menu.menudescription,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontFamily: 'Poppins',
+                            ),
+                          ),
+                          trailing: Text(
+                            menu.menuprice,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'Poppins',
+                            ),
+                          ),
+                          onTap: () {
+                            showAddToCart(
+                              menu.menuid,
+                              menu.menuname,
+                              menu.menuprice,
+                            );
+                          },
                         ),
                       ),
-                      subtitle: Text(
-                        menu.menudescription,
-                        style: TextStyle(
-                          fontSize: 12,
-                        ),
-                      ),
-                      trailing: Text(menu.menuprice),
-                      onTap: () {
-                        showAddToCart(
-                          menu.menuid,
-                          menu.menuname,
-                          menu.menuprice,
-                        );
-                      },
-                    ),
-                  ),
-                );
-              }),
+                    );
+                  }),
+            ),
       floatingActionButton: FloatingActionButton(
           onPressed: () {
             Navigator.push(

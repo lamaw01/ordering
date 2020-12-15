@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
+import 'file:///C:/Users/janre/Documents/Flutter%20Projects/ordering/color/colors.dart';
 import 'package:ordering/models/cartModel.dart';
+import 'package:ordering/models/totalModel.dart';
 import 'package:ordering/services/cartService.dart';
+import 'package:ordering/services/totalValService.dart';
 import 'package:ordering/total.dart';
 import 'package:toast/toast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class Cart extends StatefulWidget {
-  final CartModel cartModel;
-  Cart({this.cartModel});
   @override
   _CartState createState() => _CartState();
 }
 
 class _CartState extends State<Cart> {
   List<CartModel> cartList;
+  List<TotalValModel> totalValList;
   bool loading = true;
 
   getAllCart() async {
@@ -25,12 +27,21 @@ class _CartState extends State<Cart> {
     print("cart : ${cartList.length}");
   }
 
+  getTotalVal() async {
+    totalValList = await TotalValService().getMenu();
+    setState(() {
+      loading = false;
+    });
+    print("total : ${totalValList.length}");
+  }
+
   deleteToCart(CartModel cartModel) async {
     try {
       await CartService().deleteCart(cartModel);
       setState(() {
         loading = false;
         getAllCart();
+        getTotalVal();
       });
       Toast.show(
         "Item Removed",
@@ -63,6 +74,7 @@ class _CartState extends State<Cart> {
             TextButton(
               child: Text('Yes.'),
               onPressed: () {
+                print(cartIdParam);
                 deleteToCart(cartIdParam);
               },
             ),
@@ -93,138 +105,286 @@ class _CartState extends State<Cart> {
   void initState() {
     super.initState();
     getAllCart();
+    getTotalVal();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: containerColor,
         centerTitle: true,
-        title: Text('Basket'),
+        title: Text(
+          'Your Basket',
+          style: TextStyle(
+            fontFamily: 'Poppins',
+          ),
+        ),
       ),
       body: loading
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.location_on,
-                              color: Colors.red,
-                            ),
-                            Text(
-                              'Deliver to',
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 6,
-                        ),
-                        Center(
-                          child: Text(
-                            'San Marino Residence, Cebu city',
-                            style: TextStyle(
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Expanded(
-                  child: ListView.builder(
-                      itemCount: cartList.length,
-                      itemBuilder: (context, index) {
-                        CartModel cart = cartList[index];
-                        return Card(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                            child: ListTile(
-                              title: Text(
-                                cart.menuname,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                ),
+          : Container(
+              margin: EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.location_on,
+                                color: Colors.red,
                               ),
-                              subtitle: Text(
-                                cart.menuprice,
+                              Text(
+                                'Deliver to',
                                 style: TextStyle(
                                   fontSize: 12,
+                                  color: Colors.grey[700],
+                                  fontFamily: 'Poppins',
                                 ),
                               ),
-                              onLongPress: () {
-                                showDeleteToCart(cart);
-                              },
+                            ],
+                          ),
+                          Center(
+                            child: Text(
+                              'San Marino Residence, Cebu city',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontFamily: 'Poppins',
+                              ),
                             ),
                           ),
-                        );
-                      }),
-                ),
-                // Card(
-                //   child: Padding(
-                //     padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
-                //     child: Column(
-                //       children: [
-                //         Row(
-                //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //           children: [
-                //             Text(
-                //               'Total ',
-                //               style: TextStyle(
-                //                 fontSize: 14,
-                //                 fontWeight: FontWeight.bold,
-                //               ),
-                //             ),
-                //             Text(
-                //               '1,370',
-                //               style: TextStyle(
-                //                 fontSize: 14,
-                //                 fontWeight: FontWeight.bold,
-                //               ),
-                //             ),
-                //           ],
-                //         ),
-                //       ],
-                //     ),
-                //   ),
-                // ),
-                RaisedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Total(),
+                        ],
                       ),
-                    );
-                  },
-                  child: Text(
-                    'PLACE ORDER',
-                    style: TextStyle(
-                      color: Colors.white,
                     ),
                   ),
-                  color: Colors.red,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18.0),
-                    side: BorderSide(
-                      color: Colors.red,
+                  Expanded(
+                    flex: 3,
+                    child: ListView.builder(
+                        itemCount: cartList.length,
+                        itemBuilder: (context, index) {
+                          CartModel cart = cartList[index];
+                          if (cartList.isNotEmpty) {
+                            return GestureDetector(
+                              child: Card(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            cart.menuname,
+                                            style: TextStyle(
+                                              color: Colors.grey[700],
+                                              fontSize: 12,
+                                              fontFamily: 'Poppins',
+                                            ),
+                                          ),
+                                          Text(
+                                            cart.menuprice,
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Poppins',
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              onTap: () {
+                                showDeleteToCart(cart);
+                              },
+                            );
+                          } else {
+                            return CircularProgressIndicator();
+                          }
+                        }),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: ListView.builder(
+                        itemCount: totalValList.length,
+                        itemBuilder: (context, index) {
+                          TotalValModel cart = totalValList[index];
+                          if (totalValList.isNotEmpty) {
+                            return Card(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'Total',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Poppins',
+                                          ),
+                                        ),
+                                        Text(
+                                          cart.total,
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Poppins',
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          } else {
+                            return CircularProgressIndicator();
+                          }
+                        }),
+                  ),
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Cash',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontFamily: 'Poppins',
+                                ),
+                              ),
+                              SizedBox(
+                                height: 6,
+                              ),
+                              Icon(
+                                Icons.money,
+                                color: Colors.grey[700],
+                              ),
+                              SizedBox(
+                                height: 6,
+                              ),
+                              Icon(
+                                Icons.pages,
+                                color: Colors.grey[700],
+                              ),
+                              SizedBox(
+                                height: 6,
+                              ),
+                              Icon(
+                                Icons.credit_card,
+                                color: Colors.grey[700],
+                              ),
+                            ],
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Cash',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontFamily: 'Poppins',
+                                ),
+                              ),
+                              SizedBox(
+                                height: 6,
+                              ),
+                              Text(
+                                'Promo Code',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontFamily: 'Poppins',
+                                ),
+                              ),
+                              SizedBox(
+                                height: 6,
+                              ),
+                              Text(
+                                'PrayMaya',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontFamily: 'Poppins',
+                                ),
+                              ),
+                            ],
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Icon(
+                                Icons.check_box_outlined,
+                                color: Colors.red,
+                              ),
+                              SizedBox(
+                                height: 6,
+                              ),
+                              Text(
+                                'Enter Promo Code',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  decoration: TextDecoration.underline,
+                                  fontFamily: 'Poppins',
+                                ),
+                              ),
+                              SizedBox(
+                                height: 6,
+                              ),
+                              Text(
+                                'Connect Account',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  decoration: TextDecoration.underline,
+                                  fontFamily: 'Poppins',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                )
-              ],
+                  RaisedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Total(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'PLACE ORDER',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                    color: Colors.red,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                      side: BorderSide(
+                        color: Colors.red,
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
     );
   }
