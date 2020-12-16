@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ordering/colors.dart';
+import 'package:ordering/menu.dart';
 import 'package:ordering/models/checkoutModel.dart';
 import 'package:ordering/services/checkoutService.dart';
 
@@ -30,6 +31,9 @@ class _CheckoutState extends State<Checkout> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: titleColor,
+        ),
         automaticallyImplyLeading: false,
         backgroundColor: canvasColor,
         centerTitle: true,
@@ -42,6 +46,19 @@ class _CheckoutState extends State<Checkout> {
             color: titleColor,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.home),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Menu(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: loading
           ? Center(

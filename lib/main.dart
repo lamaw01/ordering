@@ -89,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
               child: Text(
-                'Login',
+                "BigBy's",
                 style: TextStyle(
                   fontSize: 25,
                   fontFamily: 'Poppins',
@@ -131,6 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
                       child: MaterialButton(
+                        height: 50,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18.0),
                           side: BorderSide(

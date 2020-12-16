@@ -69,8 +69,8 @@ class _MenuState extends State<Menu> {
                 Text(
                   'Add $menunamePara to basket?',
                   style: TextStyle(
-                    fontSize: 12,
                     fontFamily: 'Poppins',
+                    color: titleColor,
                   ),
                 ),
               ],
@@ -79,9 +79,8 @@ class _MenuState extends State<Menu> {
           actions: <Widget>[
             TextButton(
                 child: Text(
-                  'Yes',
+                  'Yes.',
                   style: TextStyle(
-                    fontSize: 14,
                     fontFamily: 'Poppins',
                   ),
                 ),
@@ -94,9 +93,8 @@ class _MenuState extends State<Menu> {
                 ),
             TextButton(
               child: Text(
-                'Cancel',
+                'Cancel.',
                 style: TextStyle(
-                  fontSize: 14,
                   fontFamily: 'Poppins',
                 ),
               ),
@@ -122,6 +120,9 @@ class _MenuState extends State<Menu> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: titleColor,
+        ),
         backgroundColor: canvasColor,
         title: Text(
           'Menu List',
@@ -137,69 +138,73 @@ class _MenuState extends State<Menu> {
             )
           : Container(
               color: canvasColor,
-              child: ListView.builder(
-                  itemCount: menuList.length,
-                  itemBuilder: (context, index) {
-                    MenuModel menu = menuList[index];
-                    return Card(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
-                        child: Theme(
-                          data: ThemeData(
-                            // highlightColor: buttonColor,
-                            splashColor: buttonColor,
-                          ),
-                          child: ListTile(
-                            leading: ConstrainedBox(
-                              constraints: BoxConstraints(
-                                minWidth: 70,
-                                minHeight: 70,
-                                maxWidth: 70,
-                                maxHeight: 70,
-                              ),
-                              child: Image.network(
-                                imageUrl + menu.menuimg,
-                                fit: BoxFit.cover,
-                              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListView.builder(
+                    itemCount: menuList.length,
+                    itemBuilder: (context, index) {
+                      MenuModel menu = menuList[index];
+                      return Card(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
+                          child: Theme(
+                            data: ThemeData(
+                              // highlightColor: buttonColor,
+                              splashColor: buttonColor,
                             ),
-                            // leading: Container(
-                            //   width: 80,
-                            //   height: 80,
-                            //   child: Image.network(imageUrl + menu.menuimg),
-                            // ),
-                            title: Text(
-                              menu.menuname,
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontFamily: 'Poppins',
+                            child: ListTile(
+                              leading: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  minWidth: 70,
+                                  minHeight: 70,
+                                  maxWidth: 70,
+                                  maxHeight: 70,
+                                ),
+                                child: Image.network(
+                                  imageUrl + menu.menuimg,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                            ),
-                            subtitle: Text(
-                              menu.menudescription,
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontFamily: 'Poppins',
-                              ),
-                            ),
-                            trailing: Text(
-                              menu.menuprice,
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontFamily: 'Poppins',
-                              ),
-                            ),
-                            onTap: () {
-                              showAddToCart(
-                                menu.menuid,
+                              // leading: Container(
+                              //   width: 80,
+                              //   height: 80,
+                              //   child: Image.network(imageUrl + menu.menuimg),
+                              // ),
+                              title: Text(
                                 menu.menuname,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              subtitle: Text(
+                                menu.menudescription,
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontFamily: 'Poppins',
+                                ),
+                              ),
+                              trailing: Text(
                                 menu.menuprice,
-                              );
-                            },
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontFamily: 'Poppins',
+                                ),
+                              ),
+                              onTap: () {
+                                showAddToCart(
+                                  menu.menuid,
+                                  menu.menuname,
+                                  menu.menuprice,
+                                );
+                              },
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  }),
+                      );
+                    }),
+              ),
             ),
       floatingActionButton: FloatingActionButton(
           onPressed: () {
