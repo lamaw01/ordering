@@ -48,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
           'Login Successful',
           context,
           gravity: Toast.BOTTOM,
-          duration: 1,
+          duration: 2,
         );
         Navigator.push(
           context,
@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
           'Username and password invalid',
           context,
           gravity: Toast.BOTTOM,
-          duration: 1,
+          duration: 2,
         );
       }
     } catch (e) {
@@ -149,10 +149,10 @@ class _MyHomePageState extends State<MyHomePage> {
                         onPressed: () {
                           if (user.text.isEmpty || pass.text.isEmpty) {
                             Toast.show(
-                              "This field is required",
+                              "All field is required",
                               context,
                               gravity: Toast.BOTTOM,
-                              duration: 1,
+                              duration: 2,
                             );
                           } else {
                             login();

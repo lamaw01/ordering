@@ -57,30 +57,41 @@ class _CartState extends State<Cart> {
     }
   }
 
-  showDeleteToCart(cartIdParam) async {
+  showDeleteToCart(cartIdParam, cartMenuNameParam) async {
     return showDialog(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Remove'),
+          title: Text(
+            'Remove',
+            style: TextStyle(
+              fontFamily: 'Poppins',
+            ),
+          ),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Remove this item from basket?'),
+                Text(
+                  'Remove $cartMenuNameParam from basket?',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontFamily: 'Poppins',
+                  ),
+                ),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Yes.'),
+              child: Text('Yes'),
               onPressed: () {
                 // print(cartIdParam);
                 deleteToCart(cartIdParam);
               },
             ),
             TextButton(
-              child: Text('Cancel.'),
+              child: Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -98,7 +109,7 @@ class _CartState extends State<Cart> {
           "Ordered",
           context,
           gravity: Toast.CENTER,
-          duration: 1,
+          duration: 2,
         );
         try {
           await http.delete('http://192.168.0.12/ordering/delete_all_cart.php');
@@ -128,25 +139,36 @@ class _CartState extends State<Cart> {
       barrierDismissible: true, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Checkout'),
+          title: Text(
+            'Checkout?',
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              color: titleColor,
+            ),
+          ),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
                 Text(
-                  'Are you sure?',
+                  'You will pay a total of ₱$totalParam',
+                  style: TextStyle(
+                    fontSize: 12,
+                    // fontFamily: 'Poppins',
+                    color: titleColor,
+                  ),
                 ),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-                child: Text('Yes.'),
+                child: Text('Yes'),
                 onPressed: () {
                   Navigator.of(context).pop();
                   addToCheckout(checkoutModel);
                 }),
             TextButton(
-              child: Text('Cancel.'),
+              child: Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -168,7 +190,7 @@ class _CartState extends State<Cart> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: containerColor,
+        backgroundColor: canvasColor,
         centerTitle: true,
         title: Text(
           'Your Basket',
@@ -236,42 +258,76 @@ class _CartState extends State<Cart> {
                         itemBuilder: (context, index) {
                           CartModel cart = cartList[index];
                           if (cartList.isNotEmpty) {
-                            return GestureDetector(
-                              child: Card(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            cart.menuname,
-                                            style: TextStyle(
-                                              color: Colors.grey[700],
-                                              fontSize: 12,
-                                              fontFamily: 'Poppins',
-                                            ),
-                                          ),
-                                          Text(
-                                            cart.menuprice,
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: 'Poppins',
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                            return Card(
+                              child: Theme(
+                                data: ThemeData(
+                                  // highlightColor: buttonColor,
+                                  splashColor: buttonColor,
+                                ),
+                                child: ListTile(
+                                  leading: Text(
+                                    cart.menuname,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontFamily: 'Poppins',
+                                    ),
                                   ),
+                                  trailing: Text(
+                                    cart.menuprice,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    showDeleteToCart(cart, cart.menuname);
+                                  },
                                 ),
                               ),
-                              onTap: () {
-                                showDeleteToCart(cart);
-                              },
                             );
+                            // return GestureDetector(
+                            //   child: Theme(
+                            //     data: ThemeData(
+                            //       splashColor: buttonColor,
+                            //     ),
+                            //     child: Card(
+                            //       child: Padding(
+                            //         padding: const EdgeInsets.all(8.0),
+                            //         child: Column(
+                            //           children: [
+                            //             Row(
+                            //               mainAxisAlignment:
+                            //                   MainAxisAlignment.spaceBetween,
+                            //               children: [
+                            //                 Text(
+                            //                   cart.menuname,
+                            //                   style: TextStyle(
+                            //                     color: Colors.grey[700],
+                            //                     fontSize: 12,
+                            //                     fontFamily: 'Poppins',
+                            //                   ),
+                            //                 ),
+                            //                 Text(
+                            //                   cart.menuprice,
+                            //                   style: TextStyle(
+                            //                     fontSize: 14,
+                            //                     fontWeight: FontWeight.bold,
+                            //                     fontFamily: 'Poppins',
+                            //                   ),
+                            //                 ),
+                            //               ],
+                            //             ),
+                            //           ],
+                            //         ),
+                            //       ),
+                            //     ),
+                            //   ),
+                            //   onTap: () {
+                            //     showDeleteToCart(cart);
+                            //   },
+                            // );
+
                           } else {
                             return CircularProgressIndicator();
                           }
@@ -286,7 +342,8 @@ class _CartState extends State<Cart> {
                           if (cart.total != null) {
                             return Card(
                               child: Padding(
-                                padding: const EdgeInsets.all(8),
+                                padding:
+                                    const EdgeInsets.fromLTRB(16, 8, 16, 8),
                                 child: Column(
                                   children: [
                                     Row(
@@ -330,9 +387,9 @@ class _CartState extends State<Cart> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Cash',
+                                'Payment',
                                 style: TextStyle(
-                                  fontSize: 12,
+                                  fontSize: 14,
                                   fontFamily: 'Poppins',
                                 ),
                               ),
@@ -362,6 +419,10 @@ class _CartState extends State<Cart> {
                           Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
+                              Text(''),
+                              SizedBox(
+                                height: 6,
+                              ),
                               Text(
                                 'Cash',
                                 style: TextStyle(
@@ -383,7 +444,7 @@ class _CartState extends State<Cart> {
                                 height: 6,
                               ),
                               Text(
-                                'PrayMaya',
+                                'PayMaya',
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontFamily: 'Poppins',
@@ -394,6 +455,10 @@ class _CartState extends State<Cart> {
                           Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
+                              Text(''),
+                              SizedBox(
+                                height: 6,
+                              ),
                               Icon(
                                 Icons.check_box_outlined,
                                 color: Colors.red,

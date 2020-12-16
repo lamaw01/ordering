@@ -57,17 +57,34 @@ class _MenuState extends State<Menu> {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Purchase'),
+          title: Text(
+            'Purchase',
+            style: TextStyle(
+              fontFamily: 'Poppins',
+            ),
+          ),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Add this item to basket?'),
+                Text(
+                  'Add $menunamePara to basket?',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontFamily: 'Poppins',
+                  ),
+                ),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-                child: Text('Yes.'),
+                child: Text(
+                  'Yes',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontFamily: 'Poppins',
+                  ),
+                ),
                 onPressed: () {
                   // print(cartModel.menuid + "asf");
                   addToCart(cartModel);
@@ -76,7 +93,13 @@ class _MenuState extends State<Menu> {
                 // Navigator.of(context).pop();
                 ),
             TextButton(
-              child: Text('Cancel.'),
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontFamily: 'Poppins',
+                ),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -99,7 +122,7 @@ class _MenuState extends State<Menu> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: containerColor,
+        backgroundColor: canvasColor,
         title: Text(
           'Menu List',
           style: TextStyle(
@@ -113,7 +136,7 @@ class _MenuState extends State<Menu> {
               child: CircularProgressIndicator(),
             )
           : Container(
-              color: containerColor,
+              color: canvasColor,
               child: ListView.builder(
                   itemCount: menuList.length,
                   itemBuilder: (context, index) {
@@ -121,40 +144,58 @@ class _MenuState extends State<Menu> {
                     return Card(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
-                        child: ListTile(
-                          leading: Container(
-                            width: 80,
-                            height: 80,
-                            child: Image.network(imageUrl + menu.menuimg),
+                        child: Theme(
+                          data: ThemeData(
+                            // highlightColor: buttonColor,
+                            splashColor: buttonColor,
                           ),
-                          title: Text(
-                            menu.menuname,
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontFamily: 'Poppins',
+                          child: ListTile(
+                            leading: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                minWidth: 70,
+                                minHeight: 70,
+                                maxWidth: 70,
+                                maxHeight: 70,
+                              ),
+                              child: Image.network(
+                                imageUrl + menu.menuimg,
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          ),
-                          subtitle: Text(
-                            menu.menudescription,
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontFamily: 'Poppins',
-                            ),
-                          ),
-                          trailing: Text(
-                            menu.menuprice,
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontFamily: 'Poppins',
-                            ),
-                          ),
-                          onTap: () {
-                            showAddToCart(
-                              menu.menuid,
+                            // leading: Container(
+                            //   width: 80,
+                            //   height: 80,
+                            //   child: Image.network(imageUrl + menu.menuimg),
+                            // ),
+                            title: Text(
                               menu.menuname,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontFamily: 'Poppins',
+                              ),
+                            ),
+                            subtitle: Text(
+                              menu.menudescription,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontFamily: 'Poppins',
+                              ),
+                            ),
+                            trailing: Text(
                               menu.menuprice,
-                            );
-                          },
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontFamily: 'Poppins',
+                              ),
+                            ),
+                            onTap: () {
+                              showAddToCart(
+                                menu.menuid,
+                                menu.menuname,
+                                menu.menuprice,
+                              );
+                            },
+                          ),
                         ),
                       ),
                     );
@@ -175,7 +216,7 @@ class _MenuState extends State<Menu> {
               Icon(Icons.shopping_basket),
             ],
           ),
-          backgroundColor: Colors.red),
+          backgroundColor: buttonColor),
     );
   }
 }
