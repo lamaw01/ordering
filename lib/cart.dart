@@ -75,7 +75,6 @@ class _CartState extends State<Cart> {
                 Text(
                   'Remove $cartMenuNameParam from basket?',
                   style: TextStyle(
-                    fontSize: 12,
                     fontFamily: 'Poppins',
                   ),
                 ),
@@ -84,14 +83,24 @@ class _CartState extends State<Cart> {
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Yes'),
+              child: Text(
+                'Yes.',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                ),
+              ),
               onPressed: () {
                 // print(cartIdParam);
                 deleteToCart(cartIdParam);
               },
             ),
             TextButton(
-              child: Text('Cancel'),
+              child: Text(
+                'Cancel.',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                ),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -150,9 +159,9 @@ class _CartState extends State<Cart> {
             child: ListBody(
               children: <Widget>[
                 Text(
-                  'You will pay a total of ₱$totalParam',
+                  'You will pay a total of ₱ $totalParam',
                   style: TextStyle(
-                    fontSize: 12,
+                    // fontSize: 12,
                     // fontFamily: 'Poppins',
                     color: titleColor,
                   ),
@@ -162,13 +171,23 @@ class _CartState extends State<Cart> {
           ),
           actions: <Widget>[
             TextButton(
-                child: Text('Yes'),
+                child: Text(
+                  'Yes.',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                  ),
+                ),
                 onPressed: () {
                   Navigator.of(context).pop();
                   addToCheckout(checkoutModel);
                 }),
             TextButton(
-              child: Text('Cancel'),
+              child: Text(
+                'Cancel.',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                ),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -190,6 +209,9 @@ class _CartState extends State<Cart> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: titleColor,
+        ),
         backgroundColor: canvasColor,
         centerTitle: true,
         title: Text(
@@ -268,14 +290,12 @@ class _CartState extends State<Cart> {
                                   leading: Text(
                                     cart.menuname,
                                     style: TextStyle(
-                                      fontSize: 12,
                                       fontFamily: 'Poppins',
                                     ),
                                   ),
                                   trailing: Text(
                                     cart.menuprice,
                                     style: TextStyle(
-                                      fontSize: 12,
                                       fontFamily: 'Poppins',
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -469,9 +489,10 @@ class _CartState extends State<Cart> {
                               Text(
                                 'Enter Promo Code',
                                 style: TextStyle(
-                                  fontSize: 10,
+                                  fontSize: 12,
                                   decoration: TextDecoration.underline,
                                   fontFamily: 'Poppins',
+                                  color: Colors.grey[500],
                                 ),
                               ),
                               SizedBox(
@@ -480,9 +501,10 @@ class _CartState extends State<Cart> {
                               Text(
                                 'Connect Account',
                                 style: TextStyle(
-                                  fontSize: 10,
+                                  fontSize: 12,
                                   decoration: TextDecoration.underline,
                                   fontFamily: 'Poppins',
+                                  color: Colors.grey[500],
                                 ),
                               ),
                             ],
